@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Database configuration
+// DB Config
 const dbConfig = {
     host: process.env.DB_HOST || 'db',
     user: process.env.DB_USER || 'root',
@@ -21,92 +21,129 @@ const dbConfig = {
     queueLimit: 0
 };
 
-let pool;
-let dbStatus = 'disconnected';
+let pool = null;
+let dbStatus = 'connecting';
 
-// Initialize Database connection
-async function initDB() {
+// Create DB connection safely
+async function connectDB() {
     try {
         pool = mysql.createPool(dbConfig);
-        await pool.query('SELECT 1');
+
+        // Test connection
+        const conn = await pool.getConnection();
+        await conn.ping();
+        conn.release();
+
         dbStatus = 'connected';
-        console.log('Database connected successfully');
+        console.log('✅ Database connected successfully');
     } catch (error) {
         dbStatus = 'error';
-        console.error('Database connection failed:', error);
-        // Retry logic for docker-compose initialization
-        setTimeout(initDB, 5000);
+        console.error('❌ Database connection failed:', error.message);
+
+        // Retry
+        setTimeout(connectDB, 5000);
     }
 }
-initDB();
+
+connectDB();
+
+// Safe DB check middleware
+function ensureDB(req, res, next) {
+    if (dbStatus !== 'connected' || !pool) {
+        return res.status(503).json({
+            message: 'Database not ready. Try again in a few seconds.'
+        });
+    }
+    next();
+}
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('Backend Running');
+    res.send('Backend Running Successfully');
 });
 
 app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'running', 
+    res.json({
+        status: 'running',
         database: dbStatus,
-        timestamp: new Date() 
+        time: new Date()
     });
 });
 
-// Register API
-app.post('/api/register', async (req, res) => {
+// REGISTER
+app.post('/api/register', ensureDB, async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-        return res.status(400).json({ message: 'Please provide name, email, and password' });
+        return res.status(400).json({
+            message: 'Name, email, password required'
+        });
     }
 
     try {
-        // Check if user exists
-        const [existingUsers] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-        if (existingUsers.length > 0) {
-            return res.status(409).json({ message: 'User with this email already exists' });
+        const [existing] = await pool.query(
+            'SELECT id FROM users WHERE email = ?',
+            [email]
+        );
+
+        if (existing.length > 0) {
+            return res.status(409).json({
+                message: 'User already exists'
+            });
         }
 
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insert user
-        await pool.query('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
-        
-        res.status(201).json({ message: 'User registered successfully' });
+        await pool.query(
+            'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+            [name, email, hashedPassword]
+        );
+
+        res.status(201).json({
+            message: 'User registered successfully'
+        });
+
     } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error('Register error:', error);
+        res.status(500).json({
+            message: 'Server error'
+        });
     }
 });
 
-// Login API
-app.post('/api/login', async (req, res) => {
+// LOGIN
+app.post('/api/login', ensureDB, async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ message: 'Please provide email and password' });
+        return res.status(400).json({
+            message: 'Email and password required'
+        });
     }
 
     try {
-        // Find user
-        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [users] = await pool.query(
+            'SELECT * FROM users WHERE email = ?',
+            [email]
+        );
+
+        if (users.length === 0) {
+            return res.status(401).json({
+                message: 'Invalid credentials'
+            });
+        }
+
         const user = users[0];
 
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+        const match = await bcrypt.compare(password, user.password);
+
+        if (!match) {
+            return res.status(401).json({
+                message: 'Invalid credentials'
+            });
         }
 
-        // Verify password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-
-        // Success (In a real app, you would return a JWT here)
-        res.status(200).json({
+        res.json({
             message: 'Login successful',
             user: {
                 id: user.id,
@@ -114,24 +151,35 @@ app.post('/api/login', async (req, res) => {
                 email: user.email
             }
         });
+
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({
+            message: 'Server error'
+        });
     }
 });
 
-// Get users API (For testing purposes)
-app.get('/api/users', async (req, res) => {
+// USERS (test)
+app.get('/api/users', ensureDB, async (req, res) => {
     try {
-        const [users] = await pool.query('SELECT id, name, email, created_at FROM users');
-        res.status(200).json(users);
+        const [users] = await pool.query(
+            'SELECT id, name, email FROM users'
+        );
+
+        res.json(users);
+
     } catch (error) {
-        console.error('Fetch users error:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error('Users error:', error);
+        res.status(500).json({
+            message: 'Server error'
+        });
     }
 });
 
+// Start server
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
