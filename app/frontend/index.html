@@ -1,296 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- RIGHT SIDE -->
+<div class="right">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gulfam Hameed | Secure Portal</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            height: 100vh;
-            background: linear-gradient(135deg, #0f172a, #1e293b, #2563eb);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .container {
-            width: 950px;
-            height: 600px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(18px);
-            border-radius: 25px;
-            overflow: hidden;
-            display: flex;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-        }
-
-        .left {
-            width: 50%;
-            background: linear-gradient(160deg, #2563eb, #1d4ed8);
-            color: white;
-            padding: 60px 45px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .left h1 {
-            font-size: 42px;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        .left span {
-            color: #bfdbfe;
-        }
-
-        .left p {
-            font-size: 16px;
-            line-height: 1.8;
-            margin-bottom: 35px;
-            opacity: 0.9;
-        }
-
-        .feature {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .feature-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 22px;
-        }
-
-        .feature-text h3 {
-            font-size: 16px;
-        }
-
-        .feature-text p {
-            font-size: 13px;
-            margin: 0;
-            opacity: 0.8;
-        }
-
-        .right {
-            width: 50%;
-            background: white;
-            padding: 50px 45px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .top-title {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .top-title h2 {
-            color: #1e293b;
-            font-size: 32px;
-        }
-
-        .top-title p {
-            color: #64748b;
-            margin-top: 8px;
-        }
-
-        .tabs {
-            display: flex;
-            background: #f1f5f9;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-
-        .tabs button {
-            width: 50%;
-            padding: 15px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .tabs button.active {
-            background: #2563eb;
-            color: white;
-        }
-
-        .input-box {
-            margin-bottom: 20px;
-        }
-
-        .input-box label {
-            display: block;
-            margin-bottom: 8px;
-            color: #334155;
-            font-weight: 500;
-        }
-
-        .input-box input {
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #cbd5e1;
-            outline: none;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-
-        .input-box input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.95;
-        }
-
-        .footer {
-            margin-top: 25px;
-            text-align: center;
-            color: #64748b;
-            font-size: 13px;
-        }
-
-        @media(max-width: 900px) {
-            .container {
-                flex-direction: column;
-                width: 95%;
-                height: auto;
-            }
-
-            .left,
-            .right {
-                width: 100%;
-            }
-
-            .left {
-                padding: 40px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="container">
-
-        <!-- Left Side -->
-        <div class="left">
-
-            <h1>Welcome <br> to <span>Gulfam Hameed's</span> Secure Platform</h1>
-
-            <p>
-                Modern authentication platform designed for cloud-native DevOps deployment
-                using Docker, Jenkins, Node.js, MySQL, Prometheus and Grafana.
-            </p>
-
-            <div class="feature">
-                <div class="feature-icon">🔒</div>
-
-                <div class="feature-text">
-                    <h3>Secure Authentication</h3>
-                    <p>Protected login system with encrypted passwords</p>
-                </div>
-            </div>
-
-            <div class="feature">
-                <div class="feature-icon">🚀</div>
-
-                <div class="feature-text">
-                    <h3>Cloud Deployment</h3>
-                    <p>Docker and CI/CD ready infrastructure</p>
-                </div>
-            </div>
-
-            <div class="feature">
-                <div class="feature-icon">📊</div>
-
-                <div class="feature-text">
-                    <h3>Monitoring</h3>
-                    <p>Integrated with Prometheus & Grafana</p>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Right Side -->
-        <div class="right">
-
-            <div class="top-title">
-                <h2>SecureAuth</h2>
-                <p>Login or create your account</p>
-            </div>
-
-            <div class="tabs">
-                <button class="active">Login</button>
-                <button>Register</button>
-            </div>
-
-            <form>
-
-                <div class="input-box">
-                    <label>Email Address</label>
-                    <input type="email" placeholder="gulfam@example.com">
-                </div>
-
-                <div class="input-box">
-                    <label>Password</label>
-                    <input type="password" placeholder="Enter password">
-                </div>
-
-                <button class="btn">Login Now</button>
-
-            </form>
-
-            <div class="footer">
-                © 2026 Gulfam Hameed | DevOps Authentication System
-            </div>
-
-        </div>
-
+    <div class="top-title">
+        <h2>SecureAuth</h2>
+        <p>Login or create your account</p>
     </div>
 
-</body>
+    <div class="tabs">
+        <button class="active" type="button">Login</button>
+        <button type="button">Register</button>
+    </div>
 
-</html>
+    <form id="authForm">
+
+        <div class="input-box">
+            <label>Name (for register)</label>
+            <input type="text" id="name" placeholder="Your name">
+        </div>
+
+        <div class="input-box">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="gulfam@example.com" required>
+        </div>
+
+        <div class="input-box">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter password" required>
+        </div>
+
+        <button class="btn" type="submit">Submit</button>
+
+    </form>
+
+    <div class="footer">
+        © 2026 Gulfam Hameed | DevOps Authentication System
+    </div>
+
+</div>
+
+<script>
+let mode = "login";
+
+// switch mode
+document.querySelectorAll(".tabs button")[0].onclick = () => {
+    mode = "login";
+};
+
+document.querySelectorAll(".tabs button")[1].onclick = () => {
+    mode = "register";
+};
+
+// form submit
+document.getElementById("authForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    let url = "";
+
+    if (mode === "register") {
+        url = "http://51.20.55.228:3000/api/register";
+    } else {
+        url = "http://51.20.55.228:3000/api/login";
+    }
+
+    const bodyData =
+        mode === "register"
+            ? { name, email, password }
+            : { email, password };
+
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bodyData)
+        });
+
+        const data = await res.json();
+
+        alert(data.message);
+
+        console.log(data);
+
+    } catch (error) {
+        alert("Backend not reachable");
+        console.log(error);
+    }
+});
+</script>
